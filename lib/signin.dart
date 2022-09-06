@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+
+import 'homepage.dart';
+
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
 
   @override
-  State<SignIn> createState() => _AignUpState();
+  State<SignIn> createState() => _SignUpState();
 }
 
-class _AignUpState extends State<SignIn> {
+class _SignUpState extends State<SignIn> {
+  firebase_auth.FirebaseAuth firebaseAuth = firebase_auth.FirebaseAuth.instance;
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  bool circular = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,11 +50,11 @@ class _AignUpState extends State<SignIn> {
           SizedBox(
             height: 20,
           ),
-          textItem("Email..."),
+          textItem("Email...", _emailController, false),
           SizedBox(
             height: 15,
           ),
-          textItem("Password..."),
+          textItem("Password...", _passwordController, true),
           SizedBox(
             height: 30,
           ),
@@ -83,20 +92,44 @@ class _AignUpState extends State<SignIn> {
   }
 
   Widget colorButton() {
-    return Container(
-      width: MediaQuery.of(context).size.width - 100,
-      height: 60,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          gradient: LinearGradient(colors: [
-            Color(0xFFFD746C),
-            Color(0xFFFF9068),
-            Color(0xFFFD746C),
-          ])),
-      child: Center(
-        child: Text(
-          " SIgn Up",
-          style: TextStyle(color: Colors.white, fontSize: 20),
+    return InkWell(
+      onTap: () async {
+        try{
+          firebase_auth.UserCredential userCredential =
+          await firebaseAuth.signInWithEmailAndPassword(
+              email: _emailController.text,
+              password: _passwordController.text);
+
+          print(userCredential.user?.email);
+          setState((){
+            circular = false;
+          });
+          Navigator.pushAndRemoveUntil(
+              context, MaterialPageRoute(builder: (builder) => HomePage()),
+                  (route) => false);
+        } catch (e){
+          final snackbar = SnackBar(content: Text(e.toString()));
+          ScaffoldMessenger.of(context).showSnackBar(snackbar);
+          setState((){
+            circular = false;
+          });
+        }
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width - 100,
+        height: 60,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: LinearGradient(colors: [
+              Color(0xFFFD746C),
+              Color(0xFFFF9068),
+              Color(0xFFFD746C),
+            ])),
+        child: Center(
+          child: circular? CircularProgressIndicator() : Text(
+            " SIgn In",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
         ),
       ),
     );
@@ -133,19 +166,28 @@ class _AignUpState extends State<SignIn> {
     );
   }
 
-  Widget textItem(String labelText) {
+  Widget textItem(String labelText, TextEditingController controller, bool obscureText) {
     return Container(
       width: MediaQuery.of(context).size.width - 70,
       height: 55,
       child: TextFormField(
+          style: TextStyle(fontSize: 17, color: Colors.white),
+          obscureText: obscureText,
+          controller: controller,
           decoration: InputDecoration(
-        labelText: labelText,
-        labelStyle: TextStyle(fontSize: 17, color: Colors.white),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(width: 1, color: Colors.grey),
-        ),
-      )),
+            labelText: labelText,
+            labelStyle: TextStyle(fontSize: 17, color: Colors.white),
+
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide(width: 1.5, color: Colors.amber),
+            ),
+
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: BorderSide(width: 1, color: Colors.grey),
+            ),
+          )),
     );
   }
 }
