@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
+class SignIn extends StatefulWidget {
+  const SignIn({Key? key}) : super(key: key);
 
   @override
-  State<SignUp> createState() => _AignUpState();
+  State<SignIn> createState() => _AignUpState();
 }
 
-class _AignUpState extends State<SignUp> {
+class _AignUpState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +19,7 @@ class _AignUpState extends State<SignUp> {
         color: Colors.black,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(
-            "Sign Up",
+            "Sign In",
             style: TextStyle(
                 fontSize: 35, color: Colors.white, fontWeight: FontWeight.bold),
           ),
@@ -53,17 +53,29 @@ class _AignUpState extends State<SignUp> {
           SizedBox(
             height: 20,
           ),
-
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("If you already have an account? ",
-                style: TextStyle(color: Colors.white, fontSize: 18),
+              Text(
+                "If you don't have an account? ",
+                style: TextStyle(color: Colors.white, fontSize: 16),
               ),
-              Text("Login ",
-                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                "Sign In",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
               )
             ],
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            "Forgot Password ",
+            style: TextStyle(
+                color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold),
           )
         ]),
       ),
