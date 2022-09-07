@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:login_with_firebase/auth_service.dart';
 import 'package:login_with_firebase/signin.dart';
 
 import 'homepage.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
 
   @override
   State<SignUp> createState() => _AignUpState();
@@ -17,6 +17,7 @@ class _AignUpState extends State<SignUp> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   bool circular = false;
+  AuthClass authClass =AuthClass();
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +36,14 @@ class _AignUpState extends State<SignUp> {
           SizedBox(
             height: 20,
           ),
-          buttonItem("assets/google.svg", "Continue with Google", 25),
+          buttonItem("assets/google.svg", "Continue with Google", 25,
+              () async {
+            await authClass.googleSignIn(context);
+              }),
           SizedBox(
             height: 15,
           ),
-          buttonItem("assets/phone.svg", "Continue with Phone", 30),
+          buttonItem("assets/phone.svg", "Continue with Phone", 30, () {} ),
           SizedBox(
             height: 20,
           ),
@@ -104,7 +108,7 @@ class _AignUpState extends State<SignUp> {
             email: _emailController.text,
             password: _passwordController.text);
 
-        print(userCredential.user?.email);
+        print(userCredential.user!.email);
         setState((){
           circular = false;
         });
@@ -139,32 +143,37 @@ class _AignUpState extends State<SignUp> {
     );
   }
 
-  Widget buttonItem(String imagepath, String buttonName, double size) {
-    return Container(
-      width: MediaQuery.of(context).size.width - 70,
-      height: 55,
-      child: Card(
-        color: Colors.black,
-        elevation: 8,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: BorderSide(width: 1, color: Colors.grey)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              imagepath,
-              height: size,
-              width: size,
-            ),
-            SizedBox(
-              width: 15,
-            ),
-            Text(
-              buttonName,
-              style: TextStyle(fontSize: 17, color: Colors.white),
-            )
-          ],
+  Widget buttonItem(String imagepath, String buttonName, double size, Function onTap) {
+    return InkWell(
+      // onTap:  () => onTap,
+
+      onTap: () => onTap(),
+      child: Container(
+        width: MediaQuery.of(context).size.width - 70,
+        height: 55,
+        child: Card(
+          color: Colors.black,
+          elevation: 8,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: BorderSide(width: 1, color: Colors.grey)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                imagepath,
+                height: size,
+                width: size,
+              ),
+              SizedBox(
+                width: 15,
+              ),
+              Text(
+                buttonName,
+                style: TextStyle(fontSize: 17, color: Colors.white),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -195,3 +204,5 @@ class _AignUpState extends State<SignUp> {
     );
   }
 }
+
+
